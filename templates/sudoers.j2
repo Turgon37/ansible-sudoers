@@ -1,0 +1,51 @@
+{%- import '_macros.j2' as macros with context -%}
+##
+## {{ ansible_managed }}
+##
+
+# Defaults specification
+
+{% for default in sudoers__defaults %}
+{%   if default is mapping %}
+{%     for name, values in default.iteritems() if name not in ['host', 'user', 'command', 'runas'] %}
+{%       if values is string %}
+Defaults{{ '@'~default.host if default.host is defined else (':'~default.user if default.user is defined else ('!'~default.command if default.command is defined else ('>'~default.runas if default.runas is defined else '' ) ) ) }}   {% if name != 'defaults' %}{{ name }} = {% endif %}"{{ values }}"
+{%       else  %}
+{%         for value in values %}
+Defaults{{ '@'~default.host if default.host is defined else (':'~default.user if default.user is defined else ('!'~default.command if default.command is defined else ('>'~default.runas if default.runas is defined else '' ) ) ) }}   {{ name }} {% if not loop.first %}+{% endif %}= "{{ value }}"
+{%         endfor %}
+{%       endif %}
+{%     endfor %}
+{%   else %}
+Defaults   {{ default }}
+{%   endif %}
+{% endfor %}
+
+## Host Aliases
+{% for alias in sudoers__host_alias|d([]) %}
+Host_Alias {{ alias.name }} = {{ alias.hosts|join(',') }}
+{% endfor %}
+
+## User Aliases
+{% for alias in sudoers__user_alias|d([]) %}
+User_Alias {{ alias.name }} = {{ alias.users|join(',') }}
+{% endfor %}
+
+## Run As Aliases
+{% for alias in sudoers__runas_alias|d([]) %}
+Runas_Alias {{ alias.name }} = {{ alias.users|join(',') }}
+{% endfor %}
+
+## Command Aliases
+{% for alias in sudoers__cmnd_alias|d([]) %}
+Cmnd_Alias {{ alias.name }} = {{ alias.commands|join(',') }}
+{% endfor %}
+
+
+## Main specifications
+{% for spec in sudoers__sudoers_specifications %}
+{{ macros.specification(spec) }}
+{% endfor %}
+
+## Read drop-in files from folder (the # here does not mean a comment)
+#includedir {{ sudoers__include_dir }}

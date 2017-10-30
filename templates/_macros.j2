@@ -1,0 +1,34 @@
+{#
+ # Produce a bind style list of items
+ # Add a semi colon after each items
+ #
+ # @param string|list set : item or set of items to stringify
+ # @return string
+ #}
+{%- macro stringify(set) -%}
+{{ set if set is string else set|join(',') }}
+{%- endmacro -%}
+
+{#
+ # Produce a sudoers specification line
+ #
+ # @param dict spec : the parameters of the specification
+ # @return string
+ #}
+{%- macro specification(spec) -%}
+{% set users = stringify(spec.users) %}
+{% set hosts = stringify(spec.hosts|d('ALL')) %}
+{% set commands = spec.commands|d([{'commands': 'ALL', 'run_as_user': 'ALL'}]) %}
+# {{ spec.comment|d(spec.name) }}
+{{ users }} {{ hosts }}={% if commands is string %}{{ commands }}{% else %}{% for cmd in commands %}{{ command(cmd) }}{% endfor %}{% endif %}
+{%- endmacro -%}
+
+{#
+ # Produce the 'commands' part of a sudoers specification line
+ #
+ # @param dict command : the parameters of the command specification
+ # @return string
+ #}
+{%- macro command(spec) -%}
+{% if spec.run_as_user is defined or spec.run_as_group is defined %}({{ stringify(spec.run_as_user|d('')) }}{{ ':'~stringify(spec.run_as_group) if spec.run_as_group is defined else '' }}){% endif %} {{ stringify(spec.commands) }}
+{%- endmacro -%}

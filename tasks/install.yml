@@ -1,0 +1,7 @@
+---
+
+- name: Install sudo packages
+  package:
+    name: '{{ item }}'
+    state: present
+  with_items: '{{ sudoers__packages_names }}'

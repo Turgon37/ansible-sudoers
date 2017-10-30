@@ -1,0 +1,69 @@
+---
+# defaults file for sudoers
+
+sudoers__packages_names:
+  - sudo
+
+sudoers__config_file: /etc/sudoers
+sudoers__include_dir: /etc/sudoers.d
+
+# Default sudoers provided with the role
+sudoers__defaults_base:
+  - env_reset
+  - env_keep:
+    - COLORS DISPLAY HOSTNAME HISTSIZE INPUTRC KDEDIR LS_COLORS
+    - MAIL PS1 PS2 QTDIR USERNAME LANG LC_ADDRESS LC_CTYPE
+    - LC_COLLATE LC_IDENTIFICATION LC_MEASUREMENT LC_MESSAGES
+    - LC_MONETARY LC_NAME LC_NUMERIC LC_PAPER LC_TELEPHONE
+    - LC_TIME LC_ALL LANGUAGE LINGUAS _XKB_CHARSET XAUTHORITY
+# Disable "ssh hostname sudo <cmd>", because it will show the password in clear. 
+#         You have to run "ssh -t hostname sudo <cmd>".
+  - requiretty
+
+# List of defaults settings to appy globally
+sudoers__defaults_global: []
+# List of defaults settings to appy at host group level
+sudoers__defaults_group: []
+# List of defaults settings to appy at host level
+sudoers__defaults_host: []
+
+# Merged list of defaults settings to apply
+sudoers__defaults: '{{ sudoers__defaults_base|
+                        union(sudoers__defaults_global)|
+                        union(sudoers__defaults_group)|
+                        union(sudoers__defaults_host) }}'
+
+# List of user aliases
+# Each item must be in the form
+#   - name: alias_name
+#     users: ['userA', 'userB']
+sudoers__user_alias: []
+
+# List of run as user aliases
+# Each item must be in the form
+#   - name: alias_name
+#    users: ['userA', 'userB']
+sudoers__runas_alias: []
+
+# List of host aliases
+# Each item must be in the form
+#   - name: alias_name
+#     hosts: ['userA', 'userB']
+sudoers__host_alias: []
+
+# List of commands aliases
+# Each item must be in the form
+#   - name: alias_name
+#     commands: ['cmdA', 'cmdB']
+sudoers__cmnd_alias: []
+
+
+# specifications in main sudoers file
+sudoers__sudoers_specifications:
+  - name: global_root
+    users: root
+    hosts: ALL
+    comment: 'Allow root to run any commands anywhere'
+    commands:
+      - commands: ALL
+        run_as_user: ALL
