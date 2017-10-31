@@ -4,8 +4,13 @@
 sudoers__packages_names:
   - sudo
 
+# Main sudoers configuration file
 sudoers__config_file: /etc/sudoers
+# Sudoers include directory
 sudoers__include_dir: /etc/sudoers.d
+
+# Set to true to purge unwanted included files
+sudoers__purge: false
 
 # Default sudoers provided with the role
 sudoers__defaults_base:

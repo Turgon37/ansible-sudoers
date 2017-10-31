@@ -8,11 +8,31 @@
     mode:  0750
     state: directory
 
+- name: List installed sudoers rules files
+  find:
+    file_type: file
+    paths:     '{{ sudoers__include_dir }}'
+  register: _sudoers__installed_files
+  check_mode: no
+
+- name: Remove unknown installed sudoers rules files
+  file:
+    path: '{{ item.path }}'
+    state: absent
+  with_items: "{{ _sudoers__installed_files.files }}"
+  when: item.path|basename not in ['README'] and sudoers__purge
+
+- name: Insert README file into include directory
+  copy:
+    src:  files/README
+    dest: '{{ sudoers__include_dir }}/README'
+    mode: 0440
+
 - name: Configure the main sudoers file
   template:
-    src:   sudoers.j2
-    dest:  '{{ sudoers__config_file }}'
-    owner: root
-    group: root
-    mode:  0440
+    src:      sudoers.j2
+    dest:     '{{ sudoers__config_file }}'
+    owner:    root
+    group:    root
+    mode:     0440
     validate: 'visudo -cf %s'
