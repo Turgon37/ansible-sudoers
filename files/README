@@ -1,3 +1,6 @@
+##
+## ANSIBLE MANAGED : Don't make changes here - they will be overwritten.
+##
 #
 # The /etc/sudoers file created includes the directive:
 # 
