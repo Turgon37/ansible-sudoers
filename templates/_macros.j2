@@ -5,8 +5,30 @@
  # @param string|list set : item or set of items to stringify
  # @return string
  #}
-{%- macro stringify(set) -%}
-{{ set if set is string else set|join(',') }}
+{%- macro stringify(set,delimiter=',') -%}
+{{ set if set is string else set|join(delimiter) }}
+{%- endmacro -%}
+
+{#
+ # Produce a sudoers Defaults line(s)
+ #
+ # @param dict spec : the parameters of the specification
+ # @return string
+ #}
+{%- macro defaults(default) -%}
+{%   if default is mapping %}
+{%     for name, values in default.iteritems() if name not in ['host', 'user', 'command', 'runas'] %}
+{%       if values is string %}
+Defaults{{ '@'~default.host if default.host is defined else (':'~default.user if default.user is defined else ('!'~default.command if default.command is defined else ('>'~default.runas if default.runas is defined else '' ) ) ) }}   {% if name != 'defaults' %}{{ name }} = {% endif %}"{{ values }}"
+{%       else  %}
+{%         for value in values %}
+Defaults{{ '@'~default.host if default.host is defined else (':'~default.user if default.user is defined else ('!'~default.command if default.command is defined else ('>'~default.runas if default.runas is defined else '' ) ) ) }}   {{ name }} {% if not loop.first %}+{% endif %}= "{{ value }}"
+{%         endfor %}
+{%       endif %}
+{%     endfor %}
+{%   else %}
+Defaults   {{ default }}
+{%   endif %}
 {%- endmacro -%}
 
 {#
@@ -30,5 +52,5 @@
  # @return string
  #}
 {%- macro command(spec) -%}
-{% if spec.run_as_user is defined or spec.run_as_group is defined %}({{ stringify(spec.run_as_user|d('')) }}{{ ':'~stringify(spec.run_as_group) if spec.run_as_group is defined else '' }}){% endif %} {{ stringify(spec.commands) }}
+{% if spec.run_as_user is defined or spec.run_as_group is defined %}({{ stringify(spec.run_as_user|d('')) }}{{ ':'~stringify(spec.run_as_group) if spec.run_as_group is defined else '' }}){% endif %} {% if spec.tags is defined %} {{ stringify(spec.tags,':') }}: {% endif %}{{ stringify(spec.commands) }}
 {%- endmacro -%}

@@ -6,19 +6,7 @@
 # Defaults specification
 
 {% for default in sudoers__defaults %}
-{%   if default is mapping %}
-{%     for name, values in default.iteritems() if name not in ['host', 'user', 'command', 'runas'] %}
-{%       if values is string %}
-Defaults{{ '@'~default.host if default.host is defined else (':'~default.user if default.user is defined else ('!'~default.command if default.command is defined else ('>'~default.runas if default.runas is defined else '' ) ) ) }}   {% if name != 'defaults' %}{{ name }} = {% endif %}"{{ values }}"
-{%       else  %}
-{%         for value in values %}
-Defaults{{ '@'~default.host if default.host is defined else (':'~default.user if default.user is defined else ('!'~default.command if default.command is defined else ('>'~default.runas if default.runas is defined else '' ) ) ) }}   {{ name }} {% if not loop.first %}+{% endif %}= "{{ value }}"
-{%         endfor %}
-{%       endif %}
-{%     endfor %}
-{%   else %}
-Defaults   {{ default }}
-{%   endif %}
+{{ macros.defaults(default) }}
 {% endfor %}
 
 ## Host Aliases

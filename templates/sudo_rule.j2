@@ -1,0 +1,14 @@
+{%- import '_macros.j2' as macros with context -%}
+##
+## {{ ansible_managed }}
+##
+
+# Defaults specification
+
+{% for default in sudoers__sudo_rule.defaults|d([]) %}
+{{ macros.defaults(default) }}
+{% endfor %}
+
+
+# Rule
+{{ macros.specification(sudoers__sudo_rule) }}

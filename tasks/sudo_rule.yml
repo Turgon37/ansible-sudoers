@@ -1,0 +1,21 @@
+---
+
+- fail:
+    msg: You must pass the variable sudoers__sudo_rule with rule specifications
+  when: sudoers__sudo_rule is not defined
+
+- name: 'Create sudoers rule {{ sudoers__sudo_rule.name }}'
+  template:
+    src:      sudo_rule.j2
+    dest:     '{{ sudoers__include_dir }}/{{ sudoers__sudo_rule.name }}'
+    owner:    root
+    group:    root
+    mode:     0440
+    validate: 'visudo -cf %s'
+  when: sudoers__sudo_rule.state|d('present') == 'present'
+  
+- name: 'Remove sudoers rule {{ sudoers__sudo_rule.name }}'
+  file:
+    path:  '{{ sudoers__include_dir }}/{{ sudoers__sudo_rule.name }}'
+    state: absent
+  when: sudoers__sudo_rule.state|d('present') != 'present'
