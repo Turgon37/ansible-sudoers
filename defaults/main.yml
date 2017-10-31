@@ -10,7 +10,9 @@ sudoers__config_file: /etc/sudoers
 sudoers__include_dir: /etc/sudoers.d
 
 # Set to true to purge unwanted included files
-sudoers__purge: false
+sudoers__purge: False
+# Set to true and above to false to see the 'to remove' files as changed without remove them
+sudoers__purge_checkmode: False
 
 # Default sudoers provided with the role
 sudoers__defaults_base:

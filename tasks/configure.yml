@@ -20,7 +20,8 @@
     path: '{{ item.path }}'
     state: absent
   with_items: "{{ _sudoers__installed_files.files }}"
-  when: item.path|basename not in ['README'] and sudoers__purge
+  when: item.path|basename not in ['README'] and sudoers__purge|bool
+  check_mode: "{{ ansible_check_mode if (not sudoers__purge_checkmode|d(false)|bool) else 'yes' }}"
 
 - name: Insert README file into include directory
   copy:
