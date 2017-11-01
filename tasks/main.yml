@@ -17,3 +17,6 @@
 
 - import_tasks: configure.yml
   tags: ['sudoers', 'sudoers-configure']
+
+- include_tasks: facts.yml
+  when: sudoers__facts|bool

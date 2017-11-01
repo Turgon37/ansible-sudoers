@@ -1,6 +1,12 @@
 ---
 # defaults file for sudoers
 
+# Simple placeholder to allow other roles to detect this role
+sudoers__role: True
+# Enable facts deploiement
+sudoers__facts: True
+
+# List of packages to install
 sudoers__packages_names:
   - sudo
 
