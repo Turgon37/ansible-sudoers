@@ -13,7 +13,7 @@ try:
     result = subprocess.Popen(['/usr/bin/env', 'sudo', '--version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
     (stdout, stderr) = result.communicate()
     output = stdout + stderr
-    for line in output.split():
+    for line in output.split('\n'):
         match = version_re.search(line)
         if match:
             content['version_full'] = match.group('version')
