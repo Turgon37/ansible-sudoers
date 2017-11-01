@@ -19,10 +19,10 @@
 {%   if default is mapping %}
 {%     for name, values in default.iteritems() if name not in ['host', 'user', 'command', 'runas'] %}
 {%       if values is string %}
-Defaults{{ '@'~default.host if default.host is defined else (':'~default.user if default.user is defined else ('!'~default.command if default.command is defined else ('>'~default.runas if default.runas is defined else '' ) ) ) }}   {% if name != 'defaults' %}{{ name }} = {% endif %}"{{ values }}"
+Defaults{{ '@'~default.host if default.host is defined else (':'~default.user if default.user is defined else ('!'~default.command if default.command is defined else ('>'~default.runas if default.runas is defined else '' ) ) ) }}   {% if name != 'defaults' %}{{ name }} = {% endif %}{{ '"'~value~'"' if ' ' in value else value }}
 {%       else  %}
 {%         for value in values %}
-Defaults{{ '@'~default.host if default.host is defined else (':'~default.user if default.user is defined else ('!'~default.command if default.command is defined else ('>'~default.runas if default.runas is defined else '' ) ) ) }}   {{ name }} {% if not loop.first %}+{% endif %}= "{{ value }}"
+Defaults{{ '@'~default.host if default.host is defined else (':'~default.user if default.user is defined else ('!'~default.command if default.command is defined else ('>'~default.runas if default.runas is defined else '' ) ) ) }}   {{ name }} {% if not loop.first %}+{% endif %}= {{ '"'~value~'"' if ' ' in value else value }}
 {%         endfor %}
 {%       endif %}
 {%     endfor %}
