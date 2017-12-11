@@ -3,6 +3,7 @@
 
 # Simple placeholder to allow other roles to detect this role
 sudoers__role: True
+
 # Enable facts deploiement
 sudoers__facts: True
 
