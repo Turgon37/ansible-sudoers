@@ -15,7 +15,7 @@
 - name: 'Create sudoers rule {{ sudoers__sudo_rule.name }}'
   template:
     src:      sudo_rule.j2
-    dest:     '{{ sudoers__include_dir }}/{{ sudoers__sudo_rule.name }}'
+    dest:     "{{ sudoers__include_dir }}/{{ sudoers__sudo_rule.name|lower|regex_replace('[^a-z0-9_-]', '_') }}"
     owner:    root
     group:    root
     mode:     0440
@@ -24,6 +24,6 @@
 
 - name: 'Remove sudoers rule {{ sudoers__sudo_rule.name }}'
   file:
-    path:  '{{ sudoers__include_dir }}/{{ sudoers__sudo_rule.name }}'
+    path:  "{{ sudoers__include_dir }}/{{ sudoers__sudo_rule.name|lower|regex_replace('[^a-z0-9_-]', '_') }}"
     state: absent
   when: sudoers__sudo_rule.state|d('present') != 'present'

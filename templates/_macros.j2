@@ -52,5 +52,5 @@ Defaults   {{ default }}
  # @return string
  #}
 {%- macro command(spec) -%}
-{% if spec.run_as_user is defined or spec.run_as_group is defined %}({{ stringify(spec.run_as_user|d('')) }}{{ ':'~stringify(spec.run_as_group) if spec.run_as_group is defined else '' }}){% endif %} {% if spec.tags is defined %} {{ stringify(spec.tags,':') }}: {% endif %}{{ stringify(spec.commands) }}
+{% if spec.run_as_user is defined or spec.run_as_group is defined %}({{ stringify(spec.run_as_user|d('')) }}{{ ':'~stringify(spec.run_as_group) if spec.run_as_group is defined else '' }}){% endif %} {% if spec.tags is defined %} {{ stringify(spec.tags,':') }}:{% endif %}{{ stringify(spec.commands) }}
 {%- endmacro -%}
