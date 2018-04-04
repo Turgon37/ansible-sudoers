@@ -11,6 +11,13 @@ sudoers__facts: True
 sudoers__packages_names:
   - sudo
 
+# Enable sudo for sss service
+sudoers__sss: False
+
+# List of package required for sss service
+sudoers__sss_packages_names:
+  - libsss-sudo
+
 # Main sudoers configuration file
 sudoers__config_file: /etc/sudoers
 # Sudoers include directory

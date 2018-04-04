@@ -1,0 +1,4 @@
+---
+
+sudoers__sss_packages_names:
+  - libsss_sudo
