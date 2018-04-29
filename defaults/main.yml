@@ -11,7 +11,7 @@ sudoers__facts: True
 sudoers__packages_names:
   - sudo
 
-# Enable sudo for sss service
+# Enable sudo with sss service
 sudoers__sss: False
 
 # List of package required for sss service
@@ -49,10 +49,10 @@ sudoers__defaults_group: []
 sudoers__defaults_host: []
 
 # Merged list of defaults settings to apply
-sudoers__defaults: '{{ sudoers__defaults_base|
-                        union(sudoers__defaults_global)|
-                        union(sudoers__defaults_group)|
-                        union(sudoers__defaults_host) }}'
+sudoers__defaults: '{{ sudoers__defaults_base
+                        |union(sudoers__defaults_global)
+                        |union(sudoers__defaults_group)
+                        |union(sudoers__defaults_host) }}'
 
 # List of user aliases
 # Each item must be in the form
@@ -88,3 +88,15 @@ sudoers__sudoers_specifications:
     commands:
       - commands: ALL
         run_as_user: ALL
+
+# List of rule intended to be defined in global inventory level
+sudoers__rules_global: {}
+# List of rule intended to be defined in hostgroup inventory level
+sudoers__rules_group: {}
+# List of rule intended to be defined in host inventory level
+sudoers__rules_host: {}
+
+# Merged list of rules used internally by the role
+sudoers__rules: '{{ sudoers__rules_global
+                      |combine(sudoers__rules_group)
+                      |combine(sudoers__rules_host) }}'

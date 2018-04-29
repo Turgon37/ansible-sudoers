@@ -37,3 +37,11 @@
     group:    root
     mode:     0440
     validate: 'visudo -cf %s'
+
+- name: Configure sudo rules
+  include_tasks: sudo_rule.yml
+  vars:
+    sudoers__sudo_rule: "{{ outer_item.value|combine({'name': outer_item.key}) }}"
+  with_dict: '{{ sudoers__rules }}'
+  loop_control:
+    loop_var: outer_item

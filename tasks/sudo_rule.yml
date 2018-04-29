@@ -5,12 +5,14 @@
     that:
       - sudoers__sudo_rule is defined
     msg: sudoers__sudo_rule must be defined with specifications
+  tags: ['always']
 
 - name: Ensure include directory exists
   file:
     path:  '{{ sudoers__include_dir }}'
     mode:  0750
     state: directory
+  tags: ['sudoers', 'sudoers-configure', 'sudoers-rule']
 
 - name: 'Create sudoers rule {{ sudoers__sudo_rule.name }}'
   template:
@@ -21,9 +23,11 @@
     mode:     0440
     validate: 'visudo -cf %s'
   when: sudoers__sudo_rule.state|d('present') == 'present'
+  tags: ['sudoers', 'sudoers-configure', 'sudoers-rule']
 
 - name: 'Remove sudoers rule {{ sudoers__sudo_rule.name }}'
   file:
     path:  "{{ sudoers__include_dir }}/{{ sudoers__sudo_rule.name|lower|regex_replace('[^a-z0-9_-]', '_') }}"
     state: absent
   when: sudoers__sudo_rule.state|d('present') != 'present'
+  tags: ['sudoers', 'sudoers-configure', 'sudoers-rule']
