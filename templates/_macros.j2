@@ -17,7 +17,7 @@
  #}
 {%- macro defaults(default) -%}
 {%   if default is mapping %}
-{%     for name, values in default.iteritems() if name not in ['host', 'user', 'command', 'runas'] %}
+{%     for name, values in default|dictsort if name not in ['host', 'user', 'command', 'runas'] %}
 {%       if values is string %}
 Defaults{{ '@'~default.host if default.host is defined else (':'~default.user if default.user is defined else ('!'~default.command if default.command is defined else ('>'~default.runas if default.runas is defined else '' ) ) ) }}   {% if name != 'defaults' %}{{ name }} = {% endif %}{{ '"'~values~'"' if ' ' in values else values }}
 {%       else  %}
