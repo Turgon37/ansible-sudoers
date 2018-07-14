@@ -2,7 +2,7 @@
 
 - name: Ensure the include directory exists
   file:
-    path:  '{{ sudoers__include_dir }}'
+    path: '{{ sudoers__include_dir }}'
     owner: root
     group: root
     mode:  0750
@@ -13,7 +13,7 @@
     file_type: file
     paths:     '{{ sudoers__include_dir }}'
   register: _sudoers__installed_files
-  check_mode: no
+  check_mode: false
 
 - name: Remove unknown installed sudoers rules files
   file:
@@ -25,21 +25,21 @@
 
 - name: Insert README file into include directory
   copy:
-    src:  files/README
+    src: files/README
     dest: '{{ sudoers__include_dir }}/README'
     mode: 0440
 
 - name: Configure the main sudoers file
   template:
-    src:      sudoers.j2
-    dest:     '{{ sudoers__config_file }}'
-    owner:    root
-    group:    root
-    mode:     0440
+    src: sudoers.j2
+    dest: '{{ sudoers__config_file }}'
+    owner: root
+    group: root
+    mode: 0440
     validate: 'visudo -cf %s'
 
 - name: Configure sudo rules
-  include_tasks: sudo_rule.yml
+  include_tasks: types/sudo_rule
   vars:
     sudoers__sudo_rule: "{{ outer_item.value|combine({'name': outer_item.key}) }}"
   with_dict: '{{ sudoers__rules }}'
