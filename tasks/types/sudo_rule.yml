@@ -1,7 +1,5 @@
 ---
 
-- debug: var=sudoers__sudo_rule
-
 - name: Check rule prerequisites
   assert:
     that:
