@@ -1,33 +1,75 @@
 ---
 
+- debug: var=sudoers__sudo_rule
+
 - name: Check rule prerequisites
   assert:
     that:
       - sudoers__sudo_rule is defined
-    msg: sudoers__sudo_rule must be defined with specifications
-  tags: ['always']
+      - sudoers__sudo_rule.name is defined and ' ' not in sudoers__sudo_rule.name
+      - >-
+        sudoers__sudo_rule.state|d('present') == 'absent' or
+        sudoers__sudo_rule.commands|d([])|length > 0
+      - sudoers__sudo_rule.state|d('present') in ['present', 'absent']
+    msg: >-
+      sudoers__sudo_rule must be defined with specifications,
+      sudoers__sudo_rule.name must contains the name of the rule without any spaces,
+      sudoers__sudo_rule.commands must contains at least one item and
+      sudoers__sudo_rule.state must be in present, absent
+  tags: ['sudoers', 'sudoers-configure', 'sudoers-rule']
+
+- name: Filter characters in user parameter name
+  set_fact:
+    _sudoers__rule_file_path: "{{ sudoers__include_dir }}/{{ sudoers__sudo_rule.name|lower|regex_replace('[^a-z0-9_-]', '_') }}"
+  tags: ['sudoers', 'sudoers-configure', 'sudoers-rule']
 
 - name: Ensure include directory exists
   file:
-    path:  '{{ sudoers__include_dir }}'
-    mode:  0750
+    path: '{{ sudoers__include_dir }}'
+    mode: 0750
     state: directory
   tags: ['sudoers', 'sudoers-configure', 'sudoers-rule']
 
 - name: 'Create sudoers rule {{ sudoers__sudo_rule.name }}'
   template:
-    src:      sudo_rule.j2
-    dest:     "{{ sudoers__include_dir }}/{{ sudoers__sudo_rule.name|lower|regex_replace('[^a-z0-9_-]', '_') }}"
-    owner:    root
-    group:    root
-    mode:     0440
+    src: sudo_rule.j2
+    dest: '{{ _sudoers__rule_file_path }}'
+    owner: root
+    group: root
+    mode: 0440
     validate: 'visudo -cf %s'
   when: sudoers__sudo_rule.state|d('present') == 'present'
   tags: ['sudoers', 'sudoers-configure', 'sudoers-rule']
 
 - name: 'Remove sudoers rule {{ sudoers__sudo_rule.name }}'
   file:
-    path:  "{{ sudoers__include_dir }}/{{ sudoers__sudo_rule.name|lower|regex_replace('[^a-z0-9_-]', '_') }}"
+    path: '{{ _sudoers__rule_file_path }}'
     state: absent
   when: sudoers__sudo_rule.state|d('present') != 'present'
+  tags: ['sudoers', 'sudoers-configure', 'sudoers-rule']
+
+- name: Looking for associated file(s) to remove with this rule
+  find:
+    path: '{{ sudoers__include_dir }}'
+    patterns: '{{ sudoers__sudo_rule.remove_using_regexp }}'
+    use_regex: true
+    file_type: file
+  when: (
+          sudoers__sudo_rule.state|d('present') != 'present' or
+          sudoers__sudo_rule.force_remove_using_regexp|d(false)|bool
+        )
+        and sudoers__sudo_rule.remove_using_regexp is defined
+  register: _sudoers__rule_remove_name_regexp_file
+  tags: ['sudoers', 'sudoers-configure', 'sudoers-rule']
+
+- name: 'Remove sudoers rules with patterns associated to {{ sudoers__sudo_rule.name }}'
+  file:
+    path: '{{ item }}'
+    state: absent
+  with_items: "{{ _sudoers__rule_remove_name_regexp_file.files|map(attribute='path')|list }}"
+  when: (
+          sudoers__sudo_rule.state|d('present') != 'present' or
+          sudoers__sudo_rule.force_remove_using_regexp|d(false)|bool
+        )
+        and sudoers__sudo_rule.remove_using_regexp is defined
   tags: ['sudoers', 'sudoers-configure', 'sudoers-rule']
