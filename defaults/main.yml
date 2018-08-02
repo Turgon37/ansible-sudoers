@@ -1,45 +1,48 @@
 ---
 # defaults file for sudoers
 
-# Simple placeholder to allow other roles to detect this role
-sudoers__role: True
-
 # Enable facts deploiement
-sudoers__facts: True
+sudoers__facts: true
 
+
+### INSTALLATION CONFIGURATION
+# ---------------------------------------
 # List of packages to install
 sudoers__packages_names:
   - sudo
 
 # Enable sudo with sss service
-sudoers__sss: False
+sudoers__sss: false
 
 # List of package required for sss service
 sudoers__sss_packages_names:
   - libsss-sudo
 
+
+### SERVICE CONFIGURATION
+# ---------------------------------------
 # Main sudoers configuration file
 sudoers__config_file: /etc/sudoers
 # Sudoers include directory
 sudoers__include_dir: /etc/sudoers.d
 
 # Set to true to purge unwanted included files
-sudoers__purge: False
+sudoers__purge: false
 # Set to true and above to false to see the 'to remove' files as changed without remove them
-sudoers__purge_checkmode: False
+sudoers__purge_checkmode: false
 
 # Default sudoers provided with the role
 sudoers__defaults_base:
   - env_reset
   - env_keep:
-    - COLORS DISPLAY HOSTNAME HISTSIZE INPUTRC KDEDIR LS_COLORS
-    - MAIL PS1 PS2 QTDIR USERNAME LANG LC_ADDRESS LC_CTYPE
-    - LC_COLLATE LC_IDENTIFICATION LC_MEASUREMENT LC_MESSAGES
-    - LC_MONETARY LC_NAME LC_NUMERIC LC_PAPER LC_TELEPHONE
-    - LC_TIME LC_ALL LANGUAGE LINGUAS _XKB_CHARSET XAUTHORITY
-# Disable "ssh hostname sudo <cmd>", because it will show the password in clear. 
-#         You have to run "ssh -t hostname sudo <cmd>".
+      - COLORS DISPLAY HOSTNAME HISTSIZE INPUTRC KDEDIR LS_COLORS
+      - MAIL PS1 PS2 QTDIR USERNAME LANG LC_ADDRESS LC_CTYPE
+      - LC_COLLATE LC_IDENTIFICATION LC_MEASUREMENT LC_MESSAGES
+      - LC_MONETARY LC_NAME LC_NUMERIC LC_PAPER LC_TELEPHONE
+      - LC_TIME LC_ALL LANGUAGE LINGUAS _XKB_CHARSET XAUTHORITY
   - requiretty
+# Disable "ssh hostname sudo <cmd>", because it will show the password in clear.
+# You have to run "ssh -t hostname sudo <cmd>"
 
 # List of defaults settings to appy globally
 sudoers__defaults_global: []
@@ -84,7 +87,7 @@ sudoers__sudoers_specifications:
   - name: global_root
     users: root
     hosts: ALL
-    comment: 'Allow root to run any commands anywhere'
+    comment: Allow root to run any commands anywhere
     commands:
       - commands: ALL
         run_as_user: ALL
