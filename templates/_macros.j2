@@ -40,7 +40,7 @@ Defaults   {{ default }}
 {%- macro specification(spec) -%}
 {% set users = stringify(spec.users) %}
 {% set hosts = stringify(spec.hosts|d('ALL')) %}
-{% set commands = spec.commands|d([{'commands': 'ALL', 'run_as_user': 'ALL'}]) %}
+{% set commands = spec.commands %}
 # {{ spec.comment|d(spec.name) }}
 {{ users }} {{ hosts }} = {% if commands is string %}{{ commands }}{% else %}{% for cmd in commands %}{% if not loop.first %}, {% endif %}{{ command(cmd) }}{% endfor %}{% endif %}
 {%- endmacro -%}
