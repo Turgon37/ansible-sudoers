@@ -5,13 +5,13 @@
     path: '{{ sudoers__include_dir }}'
     owner: root
     group: root
-    mode:  0750
+    mode: 0750
     state: directory
 
 - name: List installed sudoers rules files
   find:
     file_type: file
-    paths:     '{{ sudoers__include_dir }}'
+    paths: '{{ sudoers__include_dir }}'
   register: _sudoers__installed_files
   check_mode: false
 
@@ -39,7 +39,7 @@
     validate: 'visudo -cf %s'
 
 - name: Configure sudo rules
-  include_tasks: types/sudo_rule
+  include_tasks: types/sudo_rule.yml
   vars:
     sudoers__sudo_rule: "{{ outer_item.value|combine({'name': outer_item.key}) }}"
   with_dict: '{{ sudoers__rules }}'
