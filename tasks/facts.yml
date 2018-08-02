@@ -2,14 +2,16 @@
 
 - name: Create custom fact directory
   file:
-    path:  "{{ facts__dir|d('/etc/ansible/facts.d') }}"
+    path: "{{ facts__dir|d('/etc/ansible/facts.d') }}"
     owner: root
     group: root
-    mode:  0755
+    mode: 0755
     state: directory
+  tags: ['sudoers', 'sudoers-facts']
 
 - name: Insert custom fact file
   copy:
-    src:  files/sudo.py
-    dest: "{{ facts__dir|d('/etc/ansible/facts.d') }}/sudo.fact"
+    src: files/sudo.py
+    dest: "{{ facts__dir|d('/etc/ansible/facts.d') }}/sudoers.fact"
     mode: 0755
+  tags: ['sudoers', 'sudoers-facts']
