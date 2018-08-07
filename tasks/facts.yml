@@ -11,7 +11,7 @@
 
 - name: Insert custom fact file
   copy:
-    src: files/sudo.py
+    src: files/sudoers.py
     dest: "{{ facts__dir|d('/etc/ansible/facts.d') }}/sudoers.fact"
     mode: 0755
   tags: ['sudoers', 'sudoers-facts']
