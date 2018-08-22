@@ -24,12 +24,16 @@ sudoers__sss_packages_names:
 # Main sudoers configuration file
 sudoers__config_file: /etc/sudoers
 # Sudoers include directory
-sudoers__include_dir: /etc/sudoers.d
+sudoers__include_directory: /etc/sudoers.d
+
+# This key is put into each rule file
+# to means that this role manage it
+# if purge (see below) is enable this key will be used to
+# exclude managed files from purge
+sudoers__ansible_managed_key: __ANSIBLE__SUDOERS__
 
 # Set to true to purge unwanted included files
 sudoers__purge: false
-# Set to true and above to false to see the 'to remove' files as changed without remove them
-sudoers__purge_checkmode: false
 
 # Default sudoers provided with the role
 sudoers__defaults_base:
@@ -81,8 +85,7 @@ sudoers__host_alias: []
 #     commands: ['cmdA', 'cmdB']
 sudoers__cmnd_alias: []
 
-
-# specifications in main sudoers file
+# rules applied directly in main sudoers file (not in .d/ sub directory)
 sudoers__sudoers_specifications:
   - name: global_root
     users: root
@@ -101,5 +104,5 @@ sudoers__rules_host: {}
 
 # Merged list of rules used internally by the role
 sudoers__rules: '{{ sudoers__rules_global
-                      |combine(sudoers__rules_group)
-                      |combine(sudoers__rules_host) }}'
+                    |combine(sudoers__rules_group)
+                    |combine(sudoers__rules_host) }}'

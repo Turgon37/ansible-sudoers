@@ -1,13 +1,13 @@
 {%- import '_macros.j2' as macros with context -%}
-##
-## {{ ansible_managed }}
-##
+{{ ansible_managed|comment(decoration='# ') }}
 
-# Defaults specification
+# this key prevent purge from ansible sudoers role
+{{ sudoers__ansible_managed_key|string|comment(decoration='#') }}
 
+# Defaults
 {% for default in sudoers__sudo_rule.defaults|d([]) %}
 {{ macros.defaults(default) }}
 {% endfor %}
 
-# Rule
+# Rules
 {{ macros.specification(sudoers__sudo_rule) }}

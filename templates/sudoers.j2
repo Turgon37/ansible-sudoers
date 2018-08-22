@@ -1,7 +1,5 @@
 {%- import '_macros.j2' as macros with context -%}
-##
-## {{ ansible_managed }}
-##
+{{ ansible_managed|comment(decoration='# ') }}
 
 # Defaults specification
 
@@ -36,4 +34,4 @@ Cmnd_Alias {{ alias.name }} = {{ alias.commands|join(',') }}
 {% endfor %}
 
 ## Read drop-in files from folder (the # here does not mean a comment)
-#includedir {{ sudoers__include_dir }}
+#includedir {{ sudoers__include_directory }}
