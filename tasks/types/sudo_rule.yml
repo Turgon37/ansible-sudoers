@@ -5,10 +5,10 @@
     that:
       - sudoers__sudo_rule is defined
       - sudoers__sudo_rule.name is defined and ' ' not in sudoers__sudo_rule.name
+      - sudoers__sudo_rule.state|d('present') in ['present', 'absent']
       - >-
         sudoers__sudo_rule.state|d('present') == 'absent' or
         sudoers__sudo_rule.commands|d([])|length > 0
-      - sudoers__sudo_rule.state|d('present') in ['present', 'absent']
     msg: >-
       sudoers__sudo_rule must be defined with specifications,
       sudoers__sudo_rule.name must contains the name of the rule without any spaces,
@@ -18,12 +18,13 @@
 
 - name: Filter characters in user parameter name
   set_fact:
-    _sudoers__rule_file_path: "{{ sudoers__include_dir }}/{{ sudoers__sudo_rule.name|lower|regex_replace('[^a-z0-9_-]', '_') }}"
+    _sudoers__rule_file_path:
+      "{{ sudoers__include_directory }}/{{ sudoers__sudo_rule.name|lower|regex_replace('[^a-z0-9_-]', '_') }}"
   tags: ['sudoers', 'sudoers-configure', 'sudoers-rule']
 
 - name: Ensure include directory exists
   file:
-    path: '{{ sudoers__include_dir }}'
+    path: '{{ sudoers__include_directory }}'
     mode: 0750
     state: directory
   tags: ['sudoers', 'sudoers-configure', 'sudoers-rule']
@@ -48,7 +49,7 @@
 
 - name: Looking for associated file(s) to remove with this rule
   find:
-    path: '{{ sudoers__include_dir }}'
+    path: '{{ sudoers__include_directory }}'
     patterns: '{{ sudoers__sudo_rule.remove_using_regexp }}'
     use_regex: true
     file_type: file
