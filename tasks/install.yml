@@ -2,13 +2,11 @@
 
 - name: Install sudo packages
   package:
-    name: '{{ item }}'
+    name: '{{ sudoers__packages_names|list }}'
     state: present
-  with_items: '{{ sudoers__packages_names|list }}'
 
 - name: Install sudo packages required for sss service
   package:
-    name: '{{ item }}'
+    name: '{{ sudoers__sss_packages_names|list }}'
     state: present
-  with_items: '{{ sudoers__sss_packages_names|list }}'
   when: sudoers__sss|bool
