@@ -56,10 +56,12 @@ sudoers__defaults_group: []
 sudoers__defaults_host: []
 
 # Merged list of defaults settings to apply
-sudoers__defaults: '{{ sudoers__defaults_base
-                        |union(sudoers__defaults_global)
-                        |union(sudoers__defaults_group)
-                        |union(sudoers__defaults_host) }}'
+sudoers__defaults: '{{
+    sudoers__defaults_base
+    |union(sudoers__defaults_global)
+    |union(sudoers__defaults_group)
+    |union(sudoers__defaults_host)
+  }}'
 
 # List of user aliases
 # Each item must be in the form
@@ -103,6 +105,8 @@ sudoers__rules_group: {}
 sudoers__rules_host: {}
 
 # Merged list of rules used internally by the role
-sudoers__rules: '{{ sudoers__rules_global
-                    |combine(sudoers__rules_group)
-                    |combine(sudoers__rules_host) }}'
+sudoers__rules: '{{
+    sudoers__rules_global
+    |combine(sudoers__rules_group)
+    |combine(sudoers__rules_host)
+  }}'
