@@ -2,9 +2,8 @@
 {{ ansible_managed|comment(decoration='# ') }}
 
 # Defaults specification
-
 {% for default in sudoers__defaults %}
-{{ macros.defaults(default) }}
+{{   macros.defaults(default) }}
 {% endfor %}
 
 ## Host Aliases
